@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: colors.accent,
+    color: colors.secondary,
     marginTop: 16,
   },
   subtitle: {
     fontSize: 16,
-    color: colors.textLight,
+    color: colors.textWhite,
     marginTop: 8,
   },
   form: {
