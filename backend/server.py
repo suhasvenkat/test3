@@ -69,6 +69,8 @@ class User(BaseModel):
         "project_management": True,
         "daily_digest": True
     })
+    gdpr_consent: Optional[dict] = None
+    gdpr_consent_date: Optional[datetime] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Token(BaseModel):
