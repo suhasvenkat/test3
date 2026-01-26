@@ -47,8 +47,8 @@ export default function Login() {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Ionicons name="documents-outline" size={80} color={colors.accent} />
-          <Text style={styles.title}>Tender Tracker</Text>
+          <Ionicons name="documents-outline" size={80} color={colors.secondary} />
+          <Text style={styles.title}>GroVELLOWS</Text>
           <Text style={styles.subtitle}>German Construction Tenders</Text>
         </View>
 
