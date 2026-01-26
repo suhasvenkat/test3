@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { colors } from '../../utils/colors';
 import { fonts } from '../../utils/fonts';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const [email, setEmail] = useState('');
