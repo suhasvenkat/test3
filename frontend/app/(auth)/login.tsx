@@ -23,10 +23,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t('common.error'), t('errors.fillAllFields'));
       return;
     }
 
@@ -35,7 +36,7 @@ export default function Login() {
       await login(email, password);
       router.replace('/(tabs)');
     } catch (error: any) {
-      Alert.alert('Login Failed', error.message);
+      Alert.alert(t('errors.loginFailed'), error.message);
     } finally {
       setLoading(false);
     }
@@ -49,8 +50,8 @@ export default function Login() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Ionicons name="documents-outline" size={80} color={colors.secondary} />
-          <Text style={styles.title}>GroVELLOWS</Text>
-          <Text style={styles.subtitle}>German Construction Tenders</Text>
+          <Text style={styles.title}>{t('app.name')}</Text>
+          <Text style={styles.subtitle}>{t('app.subtitle')}</Text>
         </View>
 
         <View style={styles.form}>
@@ -58,7 +59,7 @@ export default function Login() {
             <Ionicons name="mail-outline" size={20} color={colors.textLight} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder={t('auth.email')}
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
@@ -71,7 +72,7 @@ export default function Login() {
             <Ionicons name="lock-closed-outline" size={20} color={colors.textLight} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder={t('auth.password')}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -85,7 +86,7 @@ export default function Login() {
             disabled={loading}
           >
             <Text style={styles.buttonText}>
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? t('auth.loggingIn') : t('auth.login')}
             </Text>
           </TouchableOpacity>
 
@@ -93,7 +94,7 @@ export default function Login() {
             style={styles.linkButton}
             onPress={() => router.push('/(auth)/register')}
           >
-            <Text style={styles.linkText}>Don't have an account? Register</Text>
+            <Text style={styles.linkText}>{t('auth.dontHaveAccount')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
