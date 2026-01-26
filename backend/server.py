@@ -155,6 +155,12 @@ class NotificationPreferences(BaseModel):
     project_management: bool = True
     daily_digest: bool = True
 
+class GDPRConsent(BaseModel):
+    dataProcessing: bool
+    dataStorage: bool
+    analytics: bool = False
+    marketing: bool = False
+
 # ============ HELPER FUNCTIONS ============
 
 def hash_password(password: str) -> str:
