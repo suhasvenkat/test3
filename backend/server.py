@@ -165,6 +165,38 @@ class NotificationPreferences(BaseModel):
     project_management: bool = True
     daily_digest: bool = True
 
+class NewsArticle(BaseModel):
+    id: Optional[str] = None
+    title: str
+    description: str
+    content: str
+    source: str
+    url: str
+    project_name: Optional[str] = None
+    location: Optional[str] = None
+    issue_type: str  # "stuck", "underperforming", "opportunity", "general"
+    severity: str  # "high", "medium", "low"
+    published_date: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class DeveloperProject(BaseModel):
+    id: Optional[str] = None
+    developer_name: str
+    developer_url: str
+    project_name: str
+    description: str
+    location: str
+    budget: Optional[str] = None
+    project_type: str
+    status: str  # "planning", "ongoing", "delayed", "completed"
+    start_date: datetime
+    expected_completion: datetime
+    actual_completion: Optional[datetime] = None
+    timeline_phases: List[dict] = []  # [{"phase": "Foundation", "status": "completed", "date": "..."}]
+    contacts: dict = {}
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
 class GDPRConsent(BaseModel):
     dataProcessing: bool
     dataStorage: bool
