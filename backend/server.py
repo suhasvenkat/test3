@@ -611,14 +611,485 @@ async def get_developer_project(
 
 @api_router.post("/seed-data")
 async def seed_sample_data():
-    """Seed sample tender data for testing"""
+    """Seed comprehensive sample data including tenders, news, and developer projects"""
     
-    # Check if data already exists
-    count = await db.tenders.count_documents({})
-    if count > 0:
-        return {"message": "Data already exists"}
+    # Clear existing data for fresh seed
+    await db.tenders.delete_many({})
+    await db.news.delete_many({})
+    await db.developer_projects.delete_many({})
     
+    # Existing tenders plus new specialized categories
     sample_tenders = [
+        # Original tenders...
+        {
+            "title": "Neubau Wohnquartier Berlin-Mitte",
+            "description": "Construction of a new residential quarter with 150 apartments, including underground parking and green spaces. IPA project delivery method.",
+            "budget": "€45,000,000",
+            "deadline": datetime(2025, 9, 15),
+            "location": "Berlin-Mitte, Berlin",
+            "project_type": "Residential Construction",
+            "contracting_authority": "Senatsverwaltung für Stadtentwicklung Berlin",
+            "participants": ["Hochtief AG", "Züblin AG", "BAM Deutschland AG"],
+            "contact_details": {
+                "name": "Dr. Klaus Müller",
+                "email": "k.mueller@stadtentwicklung.berlin.de",
+                "phone": "+49 30 9012 3456"
+            },
+            "tender_date": datetime(2025, 7, 1),
+            "category": "IPA",
+            "platform_source": "Vergabeplattform Berlin",
+            "platform_url": "https://berlin.de/vergabeplattform",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        # New specialized tenders
+        {
+            "title": "Risk Management Consultant - Airport Expansion München",
+            "description": "Comprehensive risk management services for Munich Airport Terminal 3 expansion. Identify, assess and mitigate construction risks. Duration: 36 months.",
+            "budget": "€2,800,000",
+            "deadline": datetime(2025, 8, 20),
+            "location": "München, Bayern",
+            "project_type": "Risk Management Services",
+            "contracting_authority": "Flughafen München GmbH",
+            "participants": [],
+            "contact_details": {
+                "name": "Dipl.-Ing. Andrea Hoffmann",
+                "email": "a.hoffmann@munich-airport.de",
+                "phone": "+49 89 9752 1234"
+            },
+            "tender_date": datetime(2025, 7, 15),
+            "category": "Risk Management",
+            "platform_source": "Vergabe Bayern",
+            "platform_url": "https://www.vergabe.bayern.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Lean Construction Management - Krankenhaus Charité Berlin",
+            "description": "Implement lean management principles for Charité Hospital renovation project. Optimize workflows, reduce waste, improve efficiency.",
+            "budget": "€1,500,000",
+            "deadline": datetime(2025, 9, 1),
+            "location": "Berlin",
+            "project_type": "Lean Management Consulting",
+            "contracting_authority": "Charité - Universitätsmedizin Berlin",
+            "participants": [],
+            "contact_details": {
+                "name": "Prof. Dr. Stefan Weber",
+                "email": "s.weber@charite.de",
+                "phone": "+49 30 450 5678"
+            },
+            "tender_date": datetime(2025, 7, 18),
+            "category": "Lean Management",
+            "platform_source": "Bund.de",
+            "platform_url": "https://service.bund.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Procurement Management - Autobahn A7 Extension",
+            "description": "Strategic procurement management for A7 Autobahn extension project. Vendor selection, contract negotiation, supply chain optimization.",
+            "budget": "€3,200,000",
+            "deadline": datetime(2025, 8, 30),
+            "location": "Hamburg - Hannover",
+            "project_type": "Procurement Services",
+            "contracting_authority": "Autobahn GmbH des Bundes",
+            "participants": [],
+            "contact_details": {
+                "name": "Michael Schmidt",
+                "email": "m.schmidt@autobahn.de",
+                "phone": "+49 40 1234 5678"
+            },
+            "tender_date": datetime(2025, 7, 20),
+            "category": "Procurement Management",
+            "platform_source": "e-Vergabe",
+            "platform_url": "https://www.evergabe-online.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Organization Alignment Workshop - Deutsche Bahn Headquarters",
+            "description": "Facilitate organizational alignment workshops for Deutsche Bahn HQ construction project. Team building, process optimization, stakeholder management.",
+            "budget": "€450,000",
+            "deadline": datetime(2025, 8, 15),
+            "location": "Frankfurt am Main",
+            "project_type": "Organizational Consulting",
+            "contracting_authority": "Deutsche Bahn AG",
+            "participants": [],
+            "contact_details": {
+                "name": "Dr. Laura Fischer",
+                "email": "l.fischer@deutschebahn.com",
+                "phone": "+49 69 265 1234"
+            },
+            "tender_date": datetime(2025, 7, 22),
+            "category": "Organization Alignment Workshops",
+            "platform_source": "Deutsche eVergabe",
+            "platform_url": "https://www.evergabe.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Construction Supervision - Wind Park Nordsee",
+            "description": "On-site construction supervision for offshore wind park project. Quality control, safety monitoring, progress reporting. 24-month duration.",
+            "budget": "€5,600,000",
+            "deadline": datetime(2025, 10, 15),
+            "location": "Nordsee, Schleswig-Holstein",
+            "project_type": "Construction Supervision",
+            "contracting_authority": "RWE Renewables GmbH",
+            "participants": [],
+            "contact_details": {
+                "name": "Ing. Thomas Nordmann",
+                "email": "t.nordmann@rwe.com",
+                "phone": "+49 201 1234 5678"
+            },
+            "tender_date": datetime(2025, 7, 25),
+            "category": "Construction Supervision",
+            "platform_source": "Vergabe.NRW",
+            "platform_url": "https://www.evergabe.nrw.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Change Order Management - Stuttgart 21",
+            "description": "Manage and coordinate all change orders for Stuttgart 21 railway project. Documentation, approval workflows, cost tracking.",
+            "budget": "€2,100,000",
+            "deadline": datetime(2025, 9, 30),
+            "location": "Stuttgart, Baden-Württemberg",
+            "project_type": "Change Management",
+            "contracting_authority": "DB Projekt Stuttgart-Ulm GmbH",
+            "participants": [],
+            "contact_details": {
+                "name": "Dipl.-Ing. Robert Bauer",
+                "email": "r.bauer@stuttgart21.de",
+                "phone": "+49 711 2092 1234"
+            },
+            "tender_date": datetime(2025, 7, 28),
+            "category": "Change Order Management",
+            "platform_source": "Vergabe Baden-Württemberg",
+            "platform_url": "https://vergabe.landbw.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Cost Management & Controlling - Tesla Gigafactory Extension",
+            "description": "Comprehensive cost management for Gigafactory Berlin extension. Budget control, variance analysis, forecasting, reporting.",
+            "budget": "€3,800,000",
+            "deadline": datetime(2025, 10, 20),
+            "location": "Grünheide, Brandenburg",
+            "project_type": "Cost Management",
+            "contracting_authority": "Tesla Manufacturing Brandenburg SE",
+            "participants": [],
+            "contact_details": {
+                "name": "Sarah Müller",
+                "email": "s.mueller@tesla.com",
+                "phone": "+49 33638 8888"
+            },
+            "tender_date": datetime(2025, 7, 30),
+            "category": "Cost Management",
+            "platform_source": "Vergabe Brandenburg",
+            "platform_url": "https://vergabe.brandenburg.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Tendering Process Optimization - BER Airport Phase 2",
+            "description": "Optimize and streamline tendering processes for Berlin Brandenburg Airport Phase 2 expansion. Digital workflows, vendor management.",
+            "budget": "€1,200,000",
+            "deadline": datetime(2025, 9, 15),
+            "location": "Schönefeld, Berlin",
+            "project_type": "Process Consulting",
+            "contracting_authority": "Flughafen Berlin Brandenburg GmbH",
+            "participants": [],
+            "contact_details": {
+                "name": "Frank Lehmann",
+                "email": "f.lehmann@berlin-airport.de",
+                "phone": "+49 30 6091 1234"
+            },
+            "tender_date": datetime(2025, 8, 1),
+            "category": "Tendering Process",
+            "platform_source": "Vergabeplattform Berlin",
+            "platform_url": "https://berlin.de/vergabeplattform",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Project Completion & Commissioning - BMW Werk Leipzig",
+            "description": "Manage final project completion phase for BMW production facility. Systems commissioning, quality checks, final documentation.",
+            "budget": "€2,500,000",
+            "deadline": datetime(2025, 11, 30),
+            "location": "Leipzig, Sachsen",
+            "project_type": "Project Completion",
+            "contracting_authority": "BMW AG",
+            "participants": [],
+            "contact_details": {
+                "name": "Dr. Martin Koch",
+                "email": "m.koch@bmw.de",
+                "phone": "+49 341 445 1234"
+            },
+            "tender_date": datetime(2025, 8, 5),
+            "category": "Project Completion",
+            "platform_source": "Sachsen Vergabe",
+            "platform_url": "https://www.sachsen-vergabe.de",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "title": "Handover Documentation - Elbphilharmonie Maintenance Center",
+            "description": "Complete handover documentation package for Elbphilharmonie maintenance facility. As-built drawings, O&M manuals, warranty documents.",
+            "budget": "€680,000",
+            "deadline": datetime(2025, 10, 10),
+            "location": "Hamburg",
+            "project_type": "Documentation Services",
+            "contracting_authority": "Freie und Hansestadt Hamburg",
+            "participants": [],
+            "contact_details": {
+                "name": "Petra Schröder",
+                "email": "p.schroeder@hamburg.de",
+                "phone": "+49 40 428 1234"
+            },
+            "tender_date": datetime(2025, 8, 8),
+            "category": "Handover Documentation",
+            "platform_source": "Hamburg Vergabe",
+            "platform_url": "https://www.hamburg.de/wirtschaft/ausschreibungen-wirtschaft/",
+            "status": "New",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+    ]
+    
+    await db.tenders.insert_many(sample_tenders)
+    
+    # News articles about stuck/underperforming projects
+    news_articles = [
+        {
+            "title": "Stuttgart 21 Faces Further Delays - Cost Overruns Reach €2.3 Billion",
+            "description": "Major railway project experiencing significant delays due to groundwater issues and unexpected geological conditions.",
+            "content": "The Stuttgart 21 underground railway station project continues to face challenges with costs now exceeding original estimates by €2.3 billion. Technical difficulties with tunnel boring and groundwater management have caused 18-month delays. Project requires experienced risk management and cost control specialists.",
+            "source": "Bauwirtschaft News",
+            "url": "https://example.com/news/stuttgart21-delays",
+            "project_name": "Stuttgart 21",
+            "location": "Stuttgart, Baden-Württemberg",
+            "issue_type": "stuck",
+            "severity": "high",
+            "published_date": datetime(2025, 7, 20),
+            "created_at": datetime.utcnow()
+        },
+        {
+            "title": "Berlin Housing Project Behind Schedule - Developer Seeks PM Support",
+            "description": "Major residential development in Berlin-Spandau running 6 months behind schedule due to supply chain disruptions.",
+            "content": "Gewobag's flagship housing project in Berlin-Spandau is experiencing significant delays. 350-unit development requires immediate project management intervention to recover schedule. Procurement issues and contractor disputes need resolution.",
+            "source": "Deutsche Bauzeitung",
+            "url": "https://example.com/news/berlin-housing-delays",
+            "project_name": "Spandau Wohnquartier",
+            "location": "Berlin-Spandau",
+            "issue_type": "underperforming",
+            "severity": "medium",
+            "published_date": datetime(2025, 7, 18),
+            "created_at": datetime.utcnow()
+        },
+        {
+            "title": "München Metro Extension Stalled - €850M Project Needs Lean Management",
+            "description": "U9 extension project experiencing workflow inefficiencies and coordination problems between contractors.",
+            "content": "Munich's U9 subway extension has ground to a halt due to severe coordination issues between multiple contractors. MVG seeks lean management consultants to optimize workflows and get the €850 million project back on track.",
+            "source": "Süddeutsche Baujournal",
+            "url": "https://example.com/news/munich-metro-stalled",
+            "project_name": "U9 Extension München",
+            "location": "München, Bayern",
+            "issue_type": "stuck",
+            "severity": "high",
+            "published_date": datetime(2025, 7, 15),
+            "created_at": datetime.utcnow()
+        },
+        {
+            "title": "Hospital Construction in Düsseldorf Requires Intervention",
+            "description": "University hospital expansion facing quality issues and missing completion milestones.",
+            "content": "The €180 million Universitätsklinikum Düsseldorf expansion is experiencing serious quality control issues. Multiple failed inspections and substandard work require immediate construction supervision specialists.",
+            "source": "Gesundheitsbau Magazin",
+            "url": "https://example.com/news/dusseldorf-hospital",
+            "project_name": "Uniklinik Düsseldorf Extension",
+            "location": "Düsseldorf, NRW",
+            "issue_type": "underperforming",
+            "severity": "high",
+            "published_date": datetime(2025, 7, 12),
+            "created_at": datetime.utcnow()
+        },
+        {
+            "title": "Opportunities in Green Energy Sector - 15 New Wind Parks Announced",
+            "description": "German government announces major expansion of renewable energy infrastructure across northern states.",
+            "content": "Bundesnetzagentur announces tender opportunities for 15 new offshore and onshore wind parks totaling €4.5 billion investment. Projects require comprehensive project management, risk assessment, and construction supervision services.",
+            "source": "Erneuerbare Energien News",
+            "url": "https://example.com/news/wind-park-opportunities",
+            "project_name": "Wind Energy Expansion 2025",
+            "location": "Norddeutschland",
+            "issue_type": "opportunity",
+            "severity": "low",
+            "published_date": datetime(2025, 7, 25),
+            "created_at": datetime.utcnow()
+        }
+    ]
+    
+    await db.news.insert_many(news_articles)
+    
+    # Developer projects with timelines
+    developer_projects = [
+        {
+            "developer_name": "HOCHTIEF Development GmbH",
+            "developer_url": "https://www.hochtief.de",
+            "project_name": "Frankfurt Garden Towers",
+            "description": "Twin-tower mixed-use development with residential, office, and retail spaces. 45-story buildings with sustainable design.",
+            "location": "Frankfurt am Main, Hessen",
+            "budget": "€650,000,000",
+            "project_type": "Mixed-Use Development",
+            "status": "ongoing",
+            "start_date": datetime(2024, 3, 1),
+            "expected_completion": datetime(2027, 12, 31),
+            "actual_completion": None,
+            "timeline_phases": [
+                {"phase": "Planning & Permits", "status": "completed", "completion_date": "2024-02-28", "progress": 100},
+                {"phase": "Foundation Work", "status": "completed", "completion_date": "2024-09-30", "progress": 100},
+                {"phase": "Structural Construction", "status": "ongoing", "completion_date": "2026-06-30", "progress": 45},
+                {"phase": "MEP Installation", "status": "pending", "completion_date": "2027-03-31", "progress": 0},
+                {"phase": "Interior Fit-out", "status": "pending", "completion_date": "2027-09-30", "progress": 0},
+                {"phase": "Commissioning", "status": "pending", "completion_date": "2027-12-31", "progress": 0}
+            ],
+            "contacts": {
+                "project_manager": "Dipl.-Ing. Marcus Weber",
+                "email": "m.weber@hochtief.de",
+                "phone": "+49 69 8765 4321"
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "developer_name": "ZÜBLIN AG",
+            "developer_url": "https://www.zueblin.de",
+            "project_name": "München Innovation Hub",
+            "description": "State-of-the-art technology and research campus with laboratory facilities, co-working spaces, and startup incubators.",
+            "location": "München, Bayern",
+            "budget": "€420,000,000",
+            "project_type": "Technology Campus",
+            "status": "delayed",
+            "start_date": datetime(2023, 6, 1),
+            "expected_completion": datetime(2026, 6, 30),
+            "actual_completion": None,
+            "timeline_phases": [
+                {"phase": "Site Preparation", "status": "completed", "completion_date": "2023-09-30", "progress": 100},
+                {"phase": "Foundation & Basement", "status": "completed", "completion_date": "2024-03-31", "progress": 100},
+                {"phase": "Superstructure", "status": "delayed", "completion_date": "2025-09-30", "progress": 60},
+                {"phase": "Building Envelope", "status": "pending", "completion_date": "2026-03-31", "progress": 15},
+                {"phase": "Technical Systems", "status": "pending", "completion_date": "2026-06-30", "progress": 0}
+            ],
+            "contacts": {
+                "project_manager": "Dr. Anna Schneider",
+                "email": "a.schneider@zueblin.de",
+                "phone": "+49 89 4567 8901"
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "developer_name": "BAM Deutschland AG",
+            "developer_url": "https://www.bam-deutschland.de",
+            "project_name": "Hamburg Hafencity Quartier 7",
+            "description": "Waterfront residential and commercial development. 800 residential units with ground-floor retail and public spaces.",
+            "location": "Hamburg-HafenCity",
+            "budget": "€580,000,000",
+            "project_type": "Waterfront Development",
+            "status": "planning",
+            "start_date": datetime(2026, 1, 1),
+            "expected_completion": datetime(2029, 12, 31),
+            "actual_completion": None,
+            "timeline_phases": [
+                {"phase": "Master Planning", "status": "ongoing", "completion_date": "2025-12-31", "progress": 75},
+                {"phase": "Permits & Approvals", "status": "ongoing", "completion_date": "2025-12-31", "progress": 50},
+                {"phase": "Site Works", "status": "pending", "completion_date": "2026-09-30", "progress": 0},
+                {"phase": "Phase 1 Construction", "status": "pending", "completion_date": "2028-06-30", "progress": 0},
+                {"phase": "Phase 2 Construction", "status": "pending", "completion_date": "2029-12-31", "progress": 0}
+            ],
+            "contacts": {
+                "project_manager": "Ing. Stefan Hoffmann",
+                "email": "s.hoffmann@bam.de",
+                "phone": "+49 40 1234 5678"
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "developer_name": "STRABAG SE",
+            "developer_url": "https://www.strabag.com",
+            "project_name": "Berlin Tesla Gigafactory Logistics Center",
+            "description": "Large-scale logistics and distribution center supporting Tesla operations. Automated warehouse systems.",
+            "location": "Grünheide, Brandenburg",
+            "budget": "€280,000,000",
+            "project_type": "Industrial/Logistics",
+            "status": "ongoing",
+            "start_date": datetime(2024, 9, 1),
+            "expected_completion": datetime(2026, 3, 31),
+            "actual_completion": None,
+            "timeline_phases": [
+                {"phase": "Site Development", "status": "completed", "completion_date": "2024-12-31", "progress": 100},
+                {"phase": "Foundation & Slab", "status": "completed", "completion_date": "2025-03-31", "progress": 100},
+                {"phase": "Steel Structure", "status": "ongoing", "completion_date": "2025-09-30", "progress": 70},
+                {"phase": "Building Envelope", "status": "ongoing", "completion_date": "2025-12-31", "progress": 30},
+                {"phase": "Automation Systems", "status": "pending", "completion_date": "2026-03-31", "progress": 0}
+            ],
+            "contacts": {
+                "project_manager": "Michael Braun",
+                "email": "m.braun@strabag.com",
+                "phone": "+49 33638 7777"
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        },
+        {
+            "developer_name": "GOLDBECK GmbH",
+            "developer_url": "https://www.goldbeck.de",
+            "project_name": "Köln Data Center Campus",
+            "description": "Hyperscale data center facility with redundant power and cooling systems. 50MW capacity across three buildings.",
+            "location": "Köln, Nordrhein-Westfalen",
+            "budget": "€390,000,000",
+            "project_type": "Data Center",
+            "status": "ongoing",
+            "start_date": datetime(2024, 1, 1),
+            "expected_completion": datetime(2025, 12, 31),
+            "actual_completion": None,
+            "timeline_phases": [
+                {"phase": "Infrastructure", "status": "completed", "completion_date": "2024-06-30", "progress": 100},
+                {"phase": "Building Shell", "status": "completed", "completion_date": "2024-12-31", "progress": 100},
+                {"phase": "MEP Systems", "status": "ongoing", "completion_date": "2025-09-30", "progress": 65},
+                {"phase": "IT Infrastructure", "status": "ongoing", "completion_date": "2025-11-30", "progress": 40},
+                {"phase": "Testing & Commissioning", "status": "pending", "completion_date": "2025-12-31", "progress": 0}
+            ],
+            "contacts": {
+                "project_manager": "Julia Fischer",
+                "email": "j.fischer@goldbeck.de",
+                "phone": "+49 221 9876 5432"
+            },
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+    ]
+    
+    await db.developer_projects.insert_many(developer_projects)
+    
+    tender_count = len(sample_tenders)
+    news_count = len(news_articles)
+    projects_count = len(developer_projects)
+    
+    return {
+        "message": f"Successfully seeded {tender_count} tenders, {news_count} news articles, and {projects_count} developer projects"
+    }
+
+# Include router
         {
             "title": "Neubau Wohnquartier Berlin-Mitte",
             "description": "Construction of a new residential quarter with 150 apartments, including underground parking and green spaces. IPA project delivery method.",
