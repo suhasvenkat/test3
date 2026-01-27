@@ -78,6 +78,46 @@
     "addedToFavorites": "Added to favorites",
     "removedFromFavorites": "Removed from favorites"
   },
+  "news": {
+    "title": "Market News",
+    "noNews": "No news available",
+    "readMore": "Read More",
+    "issueTypes": {
+      "stuck": "Stuck Project",
+      "underperforming": "Underperforming",
+      "opportunity": "Opportunity",
+      "general": "General News"
+    },
+    "severity": {
+      "high": "High Priority",
+      "medium": "Medium Priority",
+      "low": "Low Priority"
+    }
+  },
+  "developerProjects": {
+    "title": "Developer Projects",
+    "noProjects": "No projects available",
+    "timeline": "Project Timeline",
+    "budget": "Budget",
+    "status": "Status",
+    "startDate": "Start Date",
+    "expectedCompletion": "Expected Completion",
+    "developer": "Developer",
+    "projectPhases": "Project Phases",
+    "progress": "Progress",
+    "statuses": {
+      "planning": "Planning",
+      "ongoing": "Ongoing",
+      "delayed": "Delayed",
+      "completed": "Completed"
+    },
+    "phaseStatuses": {
+      "completed": "Completed",
+      "ongoing": "Ongoing",
+      "delayed": "Delayed",
+      "pending": "Pending"
+    }
+  },
   "profile": {
     "title": "Profile",
     "linkedinProfile": "LinkedIn Profile",
