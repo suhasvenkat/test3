@@ -59,6 +59,16 @@
     "ipd": "IPD",
     "integratedPM": "Integrierte Projektabwicklung",
     "projectManagement": "Projektmanagement",
+    "riskManagement": "Risikomanagement",
+    "leanManagement": "Lean Management",
+    "procurementManagement": "Beschaffungsmanagement",
+    "organizationAlignment": "Organisationsausrichtung",
+    "constructionSupervision": "Bauüberwachung",
+    "changeOrderManagement": "Änderungsmanagement",
+    "costManagement": "Kostenmanagement",
+    "tenderingProcess": "Ausschreibungsverfahren",
+    "projectCompletion": "Projektabschluss",
+    "handoverDocumentation": "Übergabedokumentation",
     "general": "Allgemein"
   },
   "favorites": {
