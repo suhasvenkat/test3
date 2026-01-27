@@ -197,6 +197,32 @@ class DeveloperProject(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+class TenderPortal(BaseModel):
+    id: Optional[str] = None
+    name: str
+    url: str
+    type: str  # "public", "private"
+    region: Optional[str] = None
+    description: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class PortalCreate(BaseModel):
+    name: str
+    url: str
+    type: str
+    region: Optional[str] = None
+    description: Optional[str] = None
+
+class PortalUpdate(BaseModel):
+    name: Optional[str] = None
+    url: Optional[str] = None
+    type: Optional[str] = None
+    region: Optional[str] = None
+    description: Optional[str] = None
+    is_active: Optional[bool] = None
+
 class GDPRConsent(BaseModel):
     dataProcessing: bool
     dataStorage: bool
