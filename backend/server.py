@@ -88,6 +88,16 @@ class TenderCategory(str):
     IPD = "IPD"
     INTEGRATED_PM = "Integrated Project Management"
     PROJECT_MANAGEMENT = "Project Management"
+    RISK_MANAGEMENT = "Risk Management"
+    LEAN_MANAGEMENT = "Lean Management"
+    PROCUREMENT_MANAGEMENT = "Procurement Management"
+    ORGANIZATION_ALIGNMENT = "Organization Alignment Workshops"
+    CONSTRUCTION_SUPERVISION = "Construction Supervision"
+    CHANGE_ORDER_MANAGEMENT = "Change Order Management"
+    COST_MANAGEMENT = "Cost Management"
+    TENDERING_PROCESS = "Tendering Process"
+    PROJECT_COMPLETION = "Project Completion"
+    HANDOVER_DOCUMENTATION = "Handover Documentation"
     GENERAL = "General"
 
 class Tender(BaseModel):
