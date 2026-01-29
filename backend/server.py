@@ -113,9 +113,17 @@ class Tender(BaseModel):
     contact_details: dict = {}
     tender_date: datetime
     category: str
+    building_typology: Optional[str] = None  # NEW
     platform_source: str
     platform_url: str
     status: str = TenderStatus.NEW
+    is_applied: bool = False  # NEW
+    applied_date: Optional[datetime] = None  # NEW
+    application_status: str = "Not Applied"  # NEW: Not Applied, Awaiting Results, Won, Lost
+    result_date: Optional[datetime] = None  # NEW
+    linkedin_connections: List[dict] = []  # NEW
+    duplicate_sources: List[str] = []  # NEW: Other platforms with same tender
+    sharepoint_folder: Optional[str] = None  # NEW
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
