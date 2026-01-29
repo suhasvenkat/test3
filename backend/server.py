@@ -411,6 +411,9 @@ async def get_tenders(
     category: Optional[str] = None,
     location: Optional[str] = None,
     search: Optional[str] = None,
+    building_typology: Optional[str] = None,
+    is_applied: Optional[bool] = None,
+    application_status: Optional[str] = None,
     current_user: dict = Depends(get_current_user)
 ):
     query = {}
@@ -421,6 +424,12 @@ async def get_tenders(
         query["category"] = category
     if location:
         query["location"] = {"$regex": location, "$options": "i"}
+    if building_typology:
+        query["building_typology"] = building_typology
+    if is_applied is not None:
+        query["is_applied"] = is_applied
+    if application_status:
+        query["application_status"] = application_status
     if search:
         query["$or"] = [
             {"title": {"$regex": search, "$options": "i"}},
