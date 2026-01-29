@@ -728,11 +728,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
-    maxWidth: 180,
+    maxWidth: 120,
   },
   categoryText: {
     fontSize: 11,
     color: colors.secondary,
+    fontWeight: '600',
+  },
+  badgesRow: {
+    flexDirection: 'row',
+    gap: 6,
+    flexShrink: 1,
+  },
+  typologyBadge: {
+    backgroundColor: '#E8F5E9',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  typologyText: {
+    fontSize: 10,
+    color: '#2E7D32',
     fontWeight: '600',
   },
   cardTitle: {
