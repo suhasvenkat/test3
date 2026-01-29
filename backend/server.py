@@ -730,7 +730,7 @@ async def get_favorites(
 
 @api_router.post("/share")
 async def share_tender(
-    share_data: Share,
+    share_data: ShareRequest,
     current_user: dict = Depends(get_current_user)
 ):
     share_dict = share_data.dict()
