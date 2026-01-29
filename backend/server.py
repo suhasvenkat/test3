@@ -494,6 +494,181 @@ async def update_tender(
     
     return {"message": "Tender updated"}
 
+# ============ APPLICATION TRACKING ENDPOINTS ============
+
+class ApplicationUpdate(BaseModel):
+    is_applied: bool = True
+    application_status: str = "Awaiting Results"
+
+@api_router.post("/tenders/{tender_id}/apply")
+async def apply_to_tender(
+    tender_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Mark a tender as applied"""
+    tender = await db.tenders.find_one({"_id": ObjectId(tender_id)})
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    
+    update_dict = {
+        "is_applied": True,
+        "applied_date": datetime.utcnow(),
+        "application_status": "Awaiting Results",
+        "updated_at": datetime.utcnow()
+    }
+    
+    # Track who applied (add user to list if not already there)
+    applied_by = tender.get("applied_by", [])
+    user_id = str(current_user["_id"])
+    if user_id not in applied_by:
+        applied_by.append(user_id)
+        update_dict["applied_by"] = applied_by
+    
+    await db.tenders.update_one(
+        {"_id": ObjectId(tender_id)},
+        {"$set": update_dict}
+    )
+    
+    return {"message": "Application recorded successfully", "applied_date": update_dict["applied_date"]}
+
+@api_router.delete("/tenders/{tender_id}/apply")
+async def unapply_tender(
+    tender_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Remove application from tender"""
+    tender = await db.tenders.find_one({"_id": ObjectId(tender_id)})
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    
+    # Remove user from applied_by list
+    applied_by = tender.get("applied_by", [])
+    user_id = str(current_user["_id"])
+    if user_id in applied_by:
+        applied_by.remove(user_id)
+    
+    # If no one has applied anymore, reset the application status
+    update_dict = {
+        "applied_by": applied_by,
+        "updated_at": datetime.utcnow()
+    }
+    
+    if len(applied_by) == 0:
+        update_dict["is_applied"] = False
+        update_dict["application_status"] = "Not Applied"
+        update_dict["applied_date"] = None
+    
+    await db.tenders.update_one(
+        {"_id": ObjectId(tender_id)},
+        {"$set": update_dict}
+    )
+    
+    return {"message": "Application removed successfully"}
+
+@api_router.put("/tenders/{tender_id}/application-status")
+async def update_application_status(
+    tender_id: str,
+    status: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update application status (Awaiting Results, Won, Lost)"""
+    valid_statuses = ["Not Applied", "Awaiting Results", "Won", "Lost"]
+    if status not in valid_statuses:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {valid_statuses}")
+    
+    update_dict = {
+        "application_status": status,
+        "updated_at": datetime.utcnow()
+    }
+    
+    # If marking as Won or Lost, record the result date
+    if status in ["Won", "Lost"]:
+        update_dict["result_date"] = datetime.utcnow()
+    
+    result = await db.tenders.update_one(
+        {"_id": ObjectId(tender_id)},
+        {"$set": update_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    
+    return {"message": f"Application status updated to {status}"}
+
+@api_router.get("/my-applications")
+async def get_my_applications(
+    application_status: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all tenders the current user has applied to"""
+    user_id = str(current_user["_id"])
+    
+    query = {"applied_by": user_id}
+    if application_status:
+        query["application_status"] = application_status
+    
+    tenders = await db.tenders.find(query).sort("applied_date", -1).to_list(1000)
+    
+    return [Tender(
+        id=str(tender["_id"]),
+        **{k: v for k, v in tender.items() if k != "_id"}
+    ) for tender in tenders]
+
+# ============ LINKEDIN CONNECTIONS ENDPOINTS ============
+
+class LinkedInConnection(BaseModel):
+    name: str
+    profile_url: str
+    role: Optional[str] = None
+    company: Optional[str] = None
+    notes: Optional[str] = None
+
+@api_router.post("/tenders/{tender_id}/linkedin")
+async def add_linkedin_connection(
+    tender_id: str,
+    connection: LinkedInConnection,
+    current_user: dict = Depends(get_current_user)
+):
+    """Add a LinkedIn connection to a tender"""
+    tender = await db.tenders.find_one({"_id": ObjectId(tender_id)})
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    
+    connection_dict = connection.dict()
+    connection_dict["added_by"] = str(current_user["_id"])
+    connection_dict["added_at"] = datetime.utcnow()
+    
+    await db.tenders.update_one(
+        {"_id": ObjectId(tender_id)},
+        {"$push": {"linkedin_connections": connection_dict}}
+    )
+    
+    return {"message": "LinkedIn connection added successfully"}
+
+@api_router.delete("/tenders/{tender_id}/linkedin/{connection_index}")
+async def remove_linkedin_connection(
+    tender_id: str,
+    connection_index: int,
+    current_user: dict = Depends(get_current_user)
+):
+    """Remove a LinkedIn connection from a tender"""
+    tender = await db.tenders.find_one({"_id": ObjectId(tender_id)})
+    if not tender:
+        raise HTTPException(status_code=404, detail="Tender not found")
+    
+    connections = tender.get("linkedin_connections", [])
+    if connection_index < 0 or connection_index >= len(connections):
+        raise HTTPException(status_code=400, detail="Invalid connection index")
+    
+    connections.pop(connection_index)
+    
+    await db.tenders.update_one(
+        {"_id": ObjectId(tender_id)},
+        {"$set": {"linkedin_connections": connections}}
+    )
+    
+    return {"message": "LinkedIn connection removed successfully"}
+
 # ============ FAVORITES ENDPOINTS ============
 
 @api_router.post("/favorites/{tender_id}")
