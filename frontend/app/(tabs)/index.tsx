@@ -790,6 +790,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 1,
   },
+  applyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.secondary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
+  },
+  appliedButton: {
+    backgroundColor: colors.success,
+  },
+  applyButtonText: {
+    fontSize: 12,
+    color: colors.textWhite,
+    fontWeight: '600',
+  },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
