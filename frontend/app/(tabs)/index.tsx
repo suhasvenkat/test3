@@ -76,9 +76,11 @@ export default function TendersScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedTypology, setSelectedTypology] = useState('All');
   const [sortBy, setSortBy] = useState('date_desc');
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'compact'>('list');
+  const [applyingId, setApplyingId] = useState<string | null>(null);
   const router = useRouter();
   const { t } = useTranslation();
 
